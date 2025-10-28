@@ -1,6 +1,43 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { register } from "../../_service/auth";
 
 export default function Register() {
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await register(formData);
+      navigate("/login");
+    } catch (error) {
+      setError(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900">
@@ -10,7 +47,12 @@ export default function Register() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Create an account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+
+              {error && (
+                <div className="text-red-500 text-sm">{error}</div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6" action="#">
                 <div>
                   <label
                     htmlFor="email"
@@ -22,9 +64,11 @@ export default function Register() {
                     type="email"
                     name="email"
                     id="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -38,9 +82,27 @@ export default function Register() {
                     type="text"
                     name="name"
                     id="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="name@company.com"
-                    required=""
+                    placeholder="full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="username"
+                    required
                   />
                 </div>
                 <div>
@@ -54,9 +116,11 @@ export default function Register() {
                     type="password"
                     name="password"
                     id="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
+                    required
                   />
                 </div>
                 <div className="flex items-start">
@@ -75,12 +139,12 @@ export default function Register() {
                       className="font-light text-gray-500 dark:text-gray-300"
                     >
                       I accept the{" "}
-                      <a
+                      <Link
                         className="font-medium text-indigo-600 hover:underline dark:text-indigo-500"
-                        href="#"
+                        to="#"
                       >
                         Terms and Conditions
-                      </a>
+                      </Link>
                     </label>
                   </div>
                 </div>
@@ -92,12 +156,12 @@ export default function Register() {
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
-                  <Link
-                    to="login"
+                  <button
+                    to="/login"
                     className="font-medium text-indigo-600 hover:underline dark:text-indigo-500"
                   >
                     Login here
-                  </Link>
+                  </button>
                 </p>
               </form>
             </div>
