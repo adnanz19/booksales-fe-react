@@ -20,6 +20,12 @@ export default function Register() {
     setLoading(true);
     setError(null);
 
+    if (!formData.email || !formData.password || !formData.name) {
+      setError("All fields are required.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await register(formData);
       navigate("/login");
