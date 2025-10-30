@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router";
+
+// Layouts & Pages
 import Home from "./pages/public";
 import Books from "./pages/public/books";
 import PublicLayout from "./layouts/public";
@@ -18,6 +20,9 @@ import BookEdit from "./pages/admin/books/edit";
 import ShowBook from "./pages/public/books/show";
 import GenreEdit from "./pages/admin/genres/edit";
 import AuthorEdit from "./pages/admin/authors/edit";
+import ProtectedRoute from "./components/protectedRoute";
+import AdminTransactions from "./pages/admin/transactions";
+
 
 function App() {
   return (
@@ -26,38 +31,45 @@ function App() {
         <Routes>
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />
-            
+
             <Route path="books">
               <Route index element={<Books />} />
               <Route path="show/:id" element={<ShowBook />} />
             </Route>
           </Route>
 
-          <Route path="login" element={<Login/>} />
-          <Route path="register" element={<Register/>} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
 
-          <Route path="admin" element={<AdminLayout/>}>
-            <Route index element={<Dashboard/>} />
+          <Route element={<ProtectedRoute requiredRole="admin" />}>
+            <Route path="admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
 
-            <Route path="books">
-              <Route index element={<AdminBooks/>} />
-              <Route path="create" element={<BookCreate/>}/>\
-              <Route path="edit/:id" element={<BookEdit/>}/>
+              <Route path="books">
+                <Route index element={<AdminBooks />} />
+                <Route path="create" element={<BookCreate />} />
+                <Route path="edit/:id" element={<BookEdit />} />
+              </Route>
+
+              <Route path="genres">
+                <Route index element={<AdminGenres />} />
+                <Route path="create" element={<GenreCreate />} />
+                <Route path="edit/:id" element={<GenreEdit />} />
+              </Route>
+
+              <Route path="authors">
+                <Route index element={<AdminAuthors />} />
+                <Route path="create" element={<AuthorCreate />} />
+                <Route path="edit/:id" element={<AuthorEdit />} />
+              </Route>
+
+              <Route path="transactions">
+                <Route index element={<AdminTransactions/>}/>
+                
+              </Route>
             </Route>
+          </Route> 
 
-            <Route path="genres">
-              <Route index element={<AdminGenres/>} />
-              <Route path="create" element={<GenreCreate/>}/>
-              <Route path="edit/:id" element={<GenreEdit/>}/>
-            </Route>
-
-            <Route path="authors">
-              <Route index element={<AdminAuthors/>} />
-              <Route path="create" element={<AuthorCreate/>}/>
-              <Route path="edit/:id" element={<AuthorEdit/>}/>
-            </Route>
-
-          </Route>
         </Routes>
       </BrowserRouter>
     </>

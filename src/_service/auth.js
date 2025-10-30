@@ -62,3 +62,18 @@ export const useDecodeToken = (token) => {
         }
     }
 }
+
+export const getRole = () => {
+    try {
+        // Pastikan 'userInfo' adalah nama key yang benar di localStorage Anda
+        const userInfoString = localStorage.getItem('userInfo'); 
+        if (userInfoString) {
+            const userInfo = JSON.parse(userInfoString);
+            return userInfo?.role || null;
+        }
+    } catch (e) {
+        console.error("Gagal parse userInfo:", e);
+        return null;
+    }
+    return null;
+}
